@@ -1,8 +1,9 @@
 from django.shortcuts import render , redirect , HttpResponseRedirect
 from store.models.product import Products
 from store.models.category import Category
+from store.models.customer import Customer
 from django.views import View
-
+import json
 
 # Create your views here.
 class Index(View):
@@ -44,16 +45,30 @@ def store(request):
     products = None
     categories = Category.get_all_categories()
     categoryID = request.GET.get('category')
+    data = {}
     if categoryID:
         products = Products.get_all_products_by_categoryid(categoryID)
+        selectedCategory = products[0].category
+        data['selectedCategory'] = selectedCategory
+        data['categoryId'] = products[0].category.id
     else:
         products = Products.get_all_products();
 
-    data = {}
+    # data = {}
     data['products'] = products
     data['categories'] = categories
-
     print('you are : ', request.session.get('email'))
+    #Customer Info
+    cid = request.session.get('customer')
+    if cid:
+        customer = Customer.objects.get(id=cid)
+        custObj = {
+            'email': customer.email,
+            'first_name': customer.first_name,
+            'last_name': customer.last_name
+        }
+        data['customer'] = json.dumps(custObj)
+        
     return render(request, 'index.html', data)
 
 
@@ -62,4 +77,15 @@ def viewProducts(request, pid):
     product = Products.get_products_by_id([pid])
     data = {}
     data['product'] = product[0]
+    #Customer Info
+    cid = request.session.get('customer')
+    if cid:
+        customer = Customer.objects.get(id=cid)
+        custObj = {
+            'email': customer.email,
+            'first_name': customer.first_name,
+            'last_name': customer.last_name
+        }
+        data['customer'] = json.dumps(custObj)
+        
     return render(request, 'view-product.html', data)

@@ -25,6 +25,9 @@
 
 		<!-- all products -->
 		<div id='products' class="col-lg-9 mx-auto">
+			{% if selectedCategory %}
+			<h3 class="category-title" catedory-id="{{categoryId}}">{{selectedCategory}}</h3>
+			{% endif %}
 			<div class="row mx-auto">
 				{% for product in products %}
 				<div class="card mx-auto mb-3" id={{product.id}} style="width: 18rem;">

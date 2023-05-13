@@ -38,7 +38,18 @@ class Index(View):
         # print()
         return HttpResponseRedirect(f'/store{request.get_full_path()[1:]}')
 
+
 def store(request):
+
+    # Products to file Start
+    # f = open("products.csv", "w")
+    # products = Products.get_all_products();
+    # f.write("id,name,price,category,description,image")
+    # for p in products:
+    #     f.write("\n" + str(p.id) + "," + str(p.name) + "," + str(p.price) + "," + str(p.category) + "," + str(p.description) + "," + str(p.image.url))
+    # f.close()
+    # Products to file End
+
     cart = request.session.get('cart')
     if not cart:
         request.session['cart'] = {}
@@ -68,7 +79,7 @@ def store(request):
             'last_name': customer.last_name
         }
         data['customer'] = json.dumps(custObj)
-        
+    
     return render(request, 'index.html', data)
 
 
